@@ -1,3 +1,4 @@
 (executable
  (name app)
- (libraries cli console.lib))
+ (libraries cli console.lib)
+ (flags (:standard -open Tablecloth)))

@@ -1,32 +1,51 @@
 module Command = {
-  /* --greet=Tom */
   let parse = text => {
-    let split = Tablecloth.String.split(~on="=", text);
+    let separated =
+      text |> String.contains(~substring="=")
+        ? text |> String.split(~on="=") : [text];
 
-    Console.log(("Split", split));
-    split;
-    /* switch (split) { */
-    /* | ["--greet", name] => `Greet(name) */
-    /* | [_, command] => `Unknown(command) */
-    /* }; */
+    switch (separated) {
+    | ["-g", name]
+    | ["--greet", name] => `Greet(name)
+    | ["-h"]
+    | ["--help"] => `Help
+    | _ => `Unknown
+    };
+  };
+
+  let printify = command => {
+    /* A JSX-like text-formatting library:
+       https://reason-native.com/docs/pastel/ */
+    Pastel.(
+      switch (command) {
+      | `Greet(name) =>
+        <Pastel italic=true color=Green>
+          "Hello "
+          <Pastel underline=true color=Cyan> {name ++ "!"} </Pastel>
+        </Pastel>
+      | `Help =>
+        <Pastel italic=true color=Green>
+          "Try "
+          <Pastel inverse=true> "--greet=<SomeName>" </Pastel>
+        </Pastel>
+
+      | `Unknown =>
+        <Pastel color=Red>
+          "Don't know that command. :-(\n\n"
+          <Pastel color=Green> "Try: `--help`" </Pastel>
+        </Pastel>
+      }
+    );
   };
 };
 
 let run = (~args) => {
-  /* A collection of std-library functions */
-  let firstRealArg =
+  let commands =
     args
-    |> Array.get(~index=1)
-    |> Option.withDefault(~default="No arguments passed.");
+    |> Array.toList
+    |> List.tail
+    |> Option.withDefault(~default=[])
+    |> List.map(~f=Command.parse);
 
-  let _commands = args |> Array.map(~f=Command.parse);
-
-  /* A JSX-like text-formatting library:
-     https://reason-native.com/docs/pastel/ */
-  Pastel.(
-    <Pastel italic=true color=Green>
-      "Hello "
-      <Pastel underline=true color=Cyan> {firstRealArg ++ "!"} </Pastel>
-    </Pastel>
-  );
+  commands |> List.map(~f=Command.printify);
 };
