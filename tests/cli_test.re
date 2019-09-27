@@ -5,7 +5,7 @@ let greetTest = () => {
   let expected =
     <Pastel italic=true color=Green>
       "Hello "
-      <Pastel underline=true color=Cyan> {"Iteamer" ++ "!"} </Pastel>
+      <Pastel underline=true color=Cyan> {"Iteamers" ++ "!"} </Pastel>
     </Pastel>;
 
   check(
@@ -16,7 +16,7 @@ let greetTest = () => {
   );
 };
 
-let cliTest = ("CLI - Hello", [test_case("runs", `Quick, greetTest)]);
+let cliTest = ("CLI", [test_case("runs", `Quick, greetTest)]);
 
 let () = {
   run("CLI", [cliTest]);

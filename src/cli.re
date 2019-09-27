@@ -29,14 +29,17 @@ module Command = {
           <Pastel inverse=true> "--greet=<SomeName>" </Pastel>
         </Pastel>
 
-      | `Unknown => <Pastel color=Red> "Unknown command!" </Pastel>
+      | `Unknown =>
+        <Pastel color=Red>
+          "Don't know that command. :-(\n\n"
+          <Pastel color=Green> "Try: `--help`" </Pastel>
+        </Pastel>
       }
     );
   };
 };
 
 let run = (~args) => {
-  /* A collection of std-library functions */
   let commands =
     args
     |> Array.toList

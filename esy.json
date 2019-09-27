@@ -8,7 +8,7 @@
   "scripts": {
     "start": "esy refmterr dune exec bin/app.exe",
     "format": "esy dune build @fmt --auto-promote",
-    "test": "esy dune exec tests/cli_test.exe"
+    "test": "esy dune exec tests/cli_test.exe -- --verbose"
   },
   "dependencies": {
     "@opam/alcotest": "0.8.5",
