@@ -1,15 +1,22 @@
 module Command = {
+  type t =
+    | Greet(string)
+    | Help
+    | Unknown;
+
   let parse = text => {
     let separated =
-      text |> String.contains(~substring="=")
-        ? text |> String.split(~on="=") : [text];
+      Tablecloth.(
+        text |> String.contains(~substring="=")
+          ? text |> String.split(~on="=") : [text]
+      );
 
     switch (separated) {
     | ["-g", name]
-    | ["--greet", name] => `Greet(name)
+    | ["--greet", name] => Greet(name)
     | ["-h"]
-    | ["--help"] => `Help
-    | _ => `Unknown
+    | ["--help"] => Help
+    | _ => Unknown
     };
   };
 
@@ -18,18 +25,17 @@ module Command = {
        https://reason-native.com/docs/pastel/ */
     Pastel.(
       switch (command) {
-      | `Greet(name) =>
+      | Greet(name) =>
         <Pastel italic=true color=Green>
           "Hello "
           <Pastel underline=true color=Cyan> {name ++ "!"} </Pastel>
         </Pastel>
-      | `Help =>
+      | Help =>
         <Pastel italic=true color=Green>
           "Try "
           <Pastel inverse=true> "--greet=<SomeName>" </Pastel>
         </Pastel>
-
-      | `Unknown =>
+      | Unknown =>
         <Pastel color=Red>
           "Don't know that command. :-(\n\n"
           <Pastel color=Green> "Try: `--help`" </Pastel>
@@ -40,6 +46,8 @@ module Command = {
 };
 
 let run = (~args) => {
+  open Tablecloth;
+
   let commands =
     args
     |> Array.toList
